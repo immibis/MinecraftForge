@@ -187,24 +187,24 @@ public class Configuration
     
     public Property getItem(String category, String key, int defaultID, String comment, boolean useShift)
     {
-        final int ITEM_SHIFT = (useShift ? Configuration.ITEM_SHIFT : 0);
+        final int usedItemShift = (useShift ? ITEM_SHIFT : 0);
         
         Property prop = get(category, key, -1, comment);
-        int defaultShift = defaultID + ITEM_SHIFT;
+        int defaultShift = defaultID + usedItemShift;
 
         if (prop.getInt() != -1)
         {
-            configMarkers[prop.getInt() + ITEM_SHIFT] = true;
+            configMarkers[prop.getInt() + usedItemShift] = true;
             return prop;
         }
         else
         {
-            if (defaultID < MAX_BLOCKS - ITEM_SHIFT)
+            if (defaultID < MAX_BLOCKS - usedItemShift)
             {
                 FMLLog.warning(
                     "Mod attempted to get a item ID with a default value in the block ID section, " +
                     "mod authors should make sure there defaults are above %d unless explicitly needed " +
-                    "so that all block ids are free to store blocks.", MAX_BLOCKS - ITEM_SHIFT);
+                    "so that all block ids are free to store blocks.", MAX_BLOCKS - usedItemShift);
                 FMLLog.warning("Config \"%s\" Category: \"%s\" Key: \"%s\" Default: %d", fileName, category, key, defaultID);
             }
 
@@ -216,11 +216,11 @@ public class Configuration
             }
             else
             {
-                for (int x = Item.itemsList.length - 1; x >= ITEM_SHIFT; x--)
+                for (int x = Item.itemsList.length - 1; x >= usedItemShift; x--)
                 {
                     if (Item.itemsList[x] == null && !configMarkers[x])
                     {
-                        prop.set(x - ITEM_SHIFT);
+                        prop.set(x - usedItemShift);
                         configMarkers[x] = true;
                         return prop;
                     }
